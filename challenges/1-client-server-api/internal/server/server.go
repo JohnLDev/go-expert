@@ -1,6 +1,7 @@
 package server
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
 
@@ -11,11 +12,11 @@ const (
 	PORT = 8080
 )
 
-func StartHttpServer() {
+func StartHttpServer(db *sql.DB) {
 
 	server := http.NewServeMux()
 
-	server.HandleFunc("/cotacao", handlers.DolarPriceHandler)
+	server.HandleFunc("/cotacao", handlers.DolarPriceHandler(db))
 
 	http.ListenAndServe(fmt.Sprintf(":%d", PORT), server)
 
