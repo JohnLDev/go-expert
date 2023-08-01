@@ -1,7 +1,6 @@
 package services
 
 import (
-	"bufio"
 	"fmt"
 	"os"
 	"text/template"
@@ -15,13 +14,9 @@ func SaveDollarPrice(data DollarPriceResult) error {
 	if err != nil {
 		return err
 	}
-
 	defer file.Close()
 
-	writer := bufio.NewWriter(file)
-	defer writer.Flush()
-
-	err = t.Execute(writer, data)
+	err = t.Execute(file, data)
 	if err != nil {
 		return err
 	}
