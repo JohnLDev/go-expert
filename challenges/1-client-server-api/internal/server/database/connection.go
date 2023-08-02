@@ -7,7 +7,7 @@ import (
 )
 
 func NewConnection() *sql.DB {
-	db, err := sql.Open("sqlite3", ":memory:")
+	db, err := sql.Open("sqlite3", "db.sqlite")
 	if err != nil {
 		panic(err)
 	}
