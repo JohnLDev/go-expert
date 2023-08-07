@@ -4,13 +4,9 @@ import (
 	"context"
 	"io"
 	"net/http"
-	"time"
 )
 
 func RequestWithContext(ctx context.Context, url string) ([]byte, error) {
-	ctx, cancel := context.WithTimeout(ctx, 1*time.Second)
-	defer cancel()
-
 	request, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
