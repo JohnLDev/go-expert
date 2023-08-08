@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/johnldev/go-expert/chanllenge-2/internal/utils"
@@ -15,14 +16,14 @@ type cepService struct {
 func (s cepService) GetCep(cep string) {
 
 	cdnUrl := fmt.Sprintf("https://cdn.apicep.com/file/apicep/%s.json", cep)
-	viaCepUrl := fmt.Sprintf("http://viacep.com.br/ws/%s/json/", cep)
+	viaCepUrl := fmt.Sprintf("http://viacep.com.br/ws/%s/json/", strings.Replace(cep, "-", "", 1))
 
 	resultViaCep := make(chan []byte)
 	resultCdn := make(chan []byte)
 	defer close(resultViaCep)
 	defer close(resultCdn)
 
-	ctx, cancel := context.WithTimeout(s.ctx, time.Microsecond)
+	ctx, cancel := context.WithTimeout(s.ctx, time.Second*1)
 	defer cancel()
 
 	go func() {

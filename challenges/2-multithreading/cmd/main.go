@@ -8,5 +8,5 @@ import (
 
 func main() {
 	viaCepService := services.NewCepService(context.Background())
-	viaCepService.GetCep("01153000")
+	viaCepService.GetCep("01153-000")
 }
