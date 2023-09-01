@@ -6,7 +6,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/devfullcycle/20-CleanArch/internal/infra/graph/model"
 	"github.com/devfullcycle/20-CleanArch/internal/usecase"
@@ -33,7 +32,20 @@ func (r *mutationResolver) CreateOrder(ctx context.Context, input *model.OrderIn
 
 // ListOrders is the resolver for the listOrders field.
 func (r *queryResolver) ListOrders(ctx context.Context) ([]*model.Order, error) {
-	panic(fmt.Errorf("not implemented: ListOrders - listOrders"))
+	orders, err := r.ListOrdersUseCase.Execute()
+	if err != nil {
+		return nil, err
+	}
+	var ordersModel []*model.Order
+	for _, order := range orders {
+		ordersModel = append(ordersModel, &model.Order{
+			ID:         order.ID,
+			Price:      float64(order.Price),
+			Tax:        float64(order.Tax),
+			FinalPrice: float64(order.FinalPrice),
+		})
+	}
+	return ordersModel, nil
 }
 
 // Mutation returns MutationResolver implementation.
