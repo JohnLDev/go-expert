@@ -5,18 +5,17 @@ import (
 	"net/http"
 	"slices"
 	"sync"
-	"time"
 
 	"github.com/johnldev/requester/internal/entities"
+	"github.com/johnldev/requester/internal/utils"
 )
 
 type StressTestUseCase struct {
 }
 
 func (uc *StressTestUseCase) Execute(input entities.StressRequest) (entities.StressResult, error) {
-	var initialTime = time.Now()
-
 	fmt.Printf("Input: %+v\n", input)
+	var timer = utils.StartTimer()
 
 	result := entities.StressResult{
 		StatusDistribution: make(map[int]int),
@@ -28,6 +27,8 @@ func (uc *StressTestUseCase) Execute(input entities.StressRequest) (entities.Str
 
 	wg := sync.WaitGroup{}
 	wg.Add(input.Requests)
+
+	mutex := sync.Mutex{}
 
 	channel := make(chan int, input.Concurrency)
 	defer close(channel)
@@ -54,9 +55,15 @@ func (uc *StressTestUseCase) Execute(input entities.StressRequest) (entities.Str
 					} else {
 						result.Failed++
 					}
+
+					mutex.Lock()
 					result.StatusDistribution[response.StatusCode]++
+					mutex.Unlock()
+
 				}
+
 				result.Requests++
+
 				wg.Done()
 			}
 		}()
@@ -67,9 +74,7 @@ func (uc *StressTestUseCase) Execute(input entities.StressRequest) (entities.Str
 	}
 
 	wg.Wait()
-
-	result.Time = time.Since(initialTime).Milliseconds()
-
+	result.Time = timer.StopTimer().Result
 	return result, nil
 }
 

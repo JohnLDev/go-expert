@@ -21,7 +21,8 @@ func (s *StressResult) Present() {
 	fmt.Printf("Amount of requests with http status 200: %d\n", s.Success)
 	fmt.Printf("Amount of failed requests: %d\n", s.Failed)
 	fmt.Printf("Total amount of requests: %d\n", s.Requests)
-	fmt.Printf("Total time: %ds\n", s.Time/1000)
+
+	fmt.Printf("Total time: %.2fs\n", float64(s.Time)/1000)
 	fmt.Println("Status distribution:")
 	for k, v := range s.StatusDistribution {
 		fmt.Printf("	Status %d: %d\n", k, v)
